@@ -21,6 +21,10 @@ config :my_app, MyAppWeb.Endpoint,
   pubsub_server: MyApp.PubSub,
   live_view: [signing_salt: "Qm3f3esd"]
 
+config :my_app, MyApp.Accounts.Guardian,
+  issuer: "my_app",
+  secret_key: "m79hNw5fGC8kXJuaqcvSUIfLygGJ8VeWsrLfeFIXjSbGdAYFS4KjZGt8wgfLJYGV"
+
 # Configures the mailer
 #
 # By default it uses the "Local" adapter which stores the emails
