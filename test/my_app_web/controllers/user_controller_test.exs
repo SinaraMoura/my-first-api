@@ -7,12 +7,12 @@ defmodule MyAppWeb.UserControllerTest do
   alias MyApp.Accounts.Guardian
 
   @create_attrs %{
-    email: "some email valid",
-    password: "some password_hash"
+    email: "test1@email.com",
+    password_hash: "password"
   }
   @update_attrs %{
-    email: "some updated email",
-    password: "some updated password_hash"
+    email: "test1@email.com",
+    password: "password"
   }
   @invalid_attrs %{email: nil, password: nil}
 
@@ -33,14 +33,16 @@ defmodule MyAppWeb.UserControllerTest do
     setup [:create_session]
 
     test "renders user when data is valid", %{conn: conn} do
-      conn = post(conn, ~p"/api/users", user: @create_attrs)
+      conn =
+        post(conn, ~p"/api/users", user: @create_attrs)
+
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
       conn = get(conn, ~p"/api/users/#{id}")
 
       assert %{
                "id" => ^id,
-               "email" => "some email valid"
+               "email" => "test1@email.com"
              } = json_response(conn, 200)["data"]
     end
 
@@ -61,7 +63,7 @@ defmodule MyAppWeb.UserControllerTest do
 
       assert %{
                "id" => ^id,
-               "email" => "some updated email"
+               "email" => "test1@email.com"
              } = json_response(conn, 200)["data"]
     end
 
@@ -87,9 +89,10 @@ defmodule MyAppWeb.UserControllerTest do
       conn =
         post(conn, ~p"/api/login", %{
           email: user.email,
-          password: "some password_hash"
+          password: "password"
         })
 
+      assert conn.status == 200
       assert json_response(conn, 200)["data"]["id"] == user.id
     end
 

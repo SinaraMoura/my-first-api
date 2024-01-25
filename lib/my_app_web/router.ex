@@ -5,8 +5,21 @@ defmodule MyAppWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :auth do
+    plug MyApp.Accounts.Pipeline
+  end
+
+  pipeline :ensure_auth do
+    plug Guardian.Plug.EnsureAuthenticated
+  end
+
   scope "/api", MyAppWeb do
-    pipe_through :api
+    pipe_through [:api, :auth, :ensure_auth]
+
+    resources "/users", UserController, except: [:new, :edit]
+    post "/user", UserController, :create
+    post "/login", SessionController, :login
+    get "/logout", SessionController, :logout
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

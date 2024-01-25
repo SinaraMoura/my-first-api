@@ -3,6 +3,7 @@ defmodule MyAppWeb.UserController do
 
   alias MyApp.Accounts
   alias MyApp.Accounts.User
+  alias MyApp.Accounts.Guardian
 
   action_fallback MyAppWeb.FallbackController
 
@@ -13,10 +14,13 @@ defmodule MyAppWeb.UserController do
 
   def create(conn, %{"user" => user_params}) do
     with {:ok, %User{} = user} <- Accounts.create_user(user_params) do
+      {:ok, token, _claims} = Guardian.encode_and_sign(user)
+
       conn
       |> put_status(:created)
       |> put_resp_header("location", ~p"/api/users/#{user}")
-      |> render(:show, user: user)
+      |> render(:create, user: user, token: token)
+      |> dbg()
     end
   end
 

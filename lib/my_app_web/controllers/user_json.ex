@@ -9,6 +9,13 @@ defmodule MyAppWeb.UserJSON do
   end
 
   @doc """
+  Renders a create user.
+  """
+  def create(%{user: user, token: token}) do
+    %{data: data(user, token)}
+  end
+
+  @doc """
   Renders a single user.
   """
   def show(%{user: user}) do
@@ -18,8 +25,15 @@ defmodule MyAppWeb.UserJSON do
   defp data(%User{} = user) do
     %{
       id: user.id,
+      email: user.email
+    }
+  end
+
+  defp data(%User{} = user, token) do
+    %{
+      id: user.id,
       email: user.email,
-      password_hash: user.password_hash
+      token: token
     }
   end
 end
