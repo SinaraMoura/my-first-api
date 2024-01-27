@@ -5,15 +5,14 @@ defmodule MyAppWeb.SessionController do
 
   alias MyApp.{Accounts, Accounts.Guardian}
 
-  def login(conn, %{"email" => email, "password" => password}) do
-    case Accounts.authenticate_user(email, password) do
+  def login(conn, %{"email" => email, "password_hash" => password_hash}) do
+    case Accounts.authenticate_user(email, password_hash) do
       {:ok, user} ->
         {:ok, token, _claims} = Guardian.encode_and_sign(user)
 
         conn
         |> put_status(:ok)
         |> render(:user_token, user: user, token: token)
-        |> dbg()
 
       {:error, _reason} ->
         conn

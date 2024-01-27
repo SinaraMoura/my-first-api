@@ -1,5 +1,5 @@
 defmodule MyAppWeb.UserControllerTest do
-  use MyAppWeb.ConnCase
+  use MyAppWeb.ConnCase, async: true
 
   import MyApp.AccountsFixtures
 
@@ -86,10 +86,16 @@ defmodule MyAppWeb.UserControllerTest do
     setup [:create_user]
 
     test "with valid credentials", %{conn: conn, user: user} do
+      conn = Guardian.Plug.sign_in(conn, user)
+      {:ok, token, _claims} = Guardian.encode_and_sign(user)
+
+      _conn_with_token =
+        put_req_header(conn, "authorization", "Bearer #{token}")
+
       conn =
         post(conn, ~p"/api/login", %{
           email: user.email,
-          password: "password"
+          password_hash: "password"
         })
 
       assert conn.status == 200
@@ -97,10 +103,12 @@ defmodule MyAppWeb.UserControllerTest do
     end
 
     test "with invalid credentials", %{conn: conn, user: user} do
+      conn = Guardian.Plug.sign_in(conn, user)
+
       conn =
         post(conn, "/api/login", %{
           email: user.email,
-          password: "wrong_password"
+          password_hash: "wrong_password"
         })
 
       assert json_response(conn, 401)["error"] =~ "Invalid credentials"

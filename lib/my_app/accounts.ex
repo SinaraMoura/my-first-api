@@ -103,7 +103,8 @@ defmodule MyApp.Accounts do
   end
 
   def authenticate_user(email, plain_text_password) do
-    query = from(u in User, where: u.email == ^email)
+    query =
+      from(u in User, where: u.email == ^email)
 
     case Repo.one(query) do
       nil ->

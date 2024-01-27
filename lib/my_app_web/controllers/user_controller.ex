@@ -20,7 +20,6 @@ defmodule MyAppWeb.UserController do
       |> put_status(:created)
       |> put_resp_header("location", ~p"/api/users/#{user}")
       |> render(:create, user: user, token: token)
-      |> dbg()
     end
   end
 

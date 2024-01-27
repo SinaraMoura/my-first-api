@@ -24,8 +24,8 @@ defmodule MyApp.Accounts.User do
   @doc false
   defp password_hash(changeset) do
     case changeset do
-      %Ecto.Changeset{valid?: true, changes: %{password: password}} ->
-        put_change(changeset, :password_hash, Bcrypt.hash_pwd_salt(password))
+      %Ecto.Changeset{valid?: true, changes: %{password_hash: password_hash}} ->
+        put_change(changeset, :password_hash, Bcrypt.hash_pwd_salt(password_hash))
 
       %Ecto.Changeset{valid?: true, changes: _} ->
         changeset
